@@ -111,7 +111,7 @@ function App() {
         }
         sx={{ mb: 2 }}
         >
-          <span>この歌詞検索エンジンは生成AIを活用することによって、キーワード検索を超えた「嬉しくて懐かしい」や「悲しい失恋」、「海に関連する」といった自然言語による検索を行うことができます。このアプリは文脈に基づいたセマンティック検索のアルゴリズムを使って、関連する結果に優先順位をつけ、おすすめの曲を教えてくれます。</span>
+          <span>この歌詞検索エンジンは生成AIを活用することによって、キーワード検索を超えた「嬉しくて懐かしい」や「悲しい失恋」、「海に関連する」といった自然言語による検索を行うことができます。このアプリは文脈に基づいたセマンティック検索のアルゴリズムを使って、関連する検索結果に優先順位をつけ、おすすめの曲を教えてくれます。</span>
         </Alert>
       </Collapse>
 
@@ -177,12 +177,14 @@ function App() {
           >
             <TypeAnimation
               sequence={[
-                `${filterData['insights'] !== '' && filterData['insights']}`,
+                `${filterData['sentiment'] === 'positive' ? '検索結果には、あなたの入力文に従ってポジティブな感情に合わせた曲のみを選びました。\n' : ''}
+                ${filterData['sentiment'] === 'negative' ? '検索結果には、あなたの入力文に従ってネガティブな感情に合わせた曲のみを選びました。\n': ''}
+                ${filterData['insights'] !== '' && filterData['insights']}`,
               ]}
               speed={{ type: 'keyStrokeDelayInMs', value: 30 }}
               style={{ fontSize: '1em', display: 'block'}}
               cursor={false}
-            />            
+            />
           </Alert>
           ) : (<span>ロード中...</span>)}
         </AccordionDetails>

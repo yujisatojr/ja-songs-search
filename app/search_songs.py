@@ -49,7 +49,7 @@ def parse_user_query(user_query):
         Your task is to parse the following query '{user_query}' provided by a user and generate JSON output according to the template provided later.
         The explanation of each value in the JSON template is as follows:
         "query": For this field, put the user query as is.
-        "sentiment": This field represents the sentiment of the song. If the user mentions words or phrases that can be interpreted as sad or unhappy, fill out this field with 'negative'. If words or phrases that can be interpreted as happy are mentioned, fill out this field with 'positive'. If sentiment is not specified in the user query, leave the field empty.
+        "sentiment": This field represents the sentiment of the song. If the user mentions words such as '悲しい', 'かなしい' are mentioned in the user query, fill out this field with 'negative'. If words such as '楽しい', '嬉しい', 'ハッピー' are mentioned, fill out this field with 'positive'. If these words are not mentioned or specified in the user query, please leave the field empty.
         "insights": For this field, provide one sentence of brief insights regarding the user's keywords and one sentence of recommendations to the user (use 'あなた' to refer to the user) on which Japanese song(s) and/or Japanese artist(s) the user might like based on the user's keywords. The entire sentence needs to have a friendly tone and be entirely in the Japanese language.
         Below is the JSON template:
         {{
