@@ -82,8 +82,8 @@ def parse_user_query(user_query):
 
 def create_filter(parsed_query):
 
-    print('FILTER GENERATED')
-    print(parsed_query)
+    # print('FILTER GENERATED')
+    # print(parsed_query)
 
     data = json.loads(parsed_query)
 
