@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import FadeIn from 'react-fade-in';
 import { Oval, ThreeDots } from 'react-loader-spinner'
@@ -33,6 +33,8 @@ function App() {
   const [isFilterLoading, setIsFilterLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [initRequest, setInitRequest] = useState<boolean>(false);
+
+  const truncateString = (str: string, maxLength: number) => str.length > maxLength ? str.slice(0, maxLength) : str;
 
   const handleSearchSubmit = async () => {
     setIsFilterLoading(true);
@@ -80,7 +82,7 @@ function App() {
   // console.log(songData);
 
   return (
-    <FadeIn transitionDuration={700} className='movie-app-root'>
+    <FadeIn transitionDuration={700} className='song_app_root'>
       <div className='header'>
         <h1>AI 歌詞検索 🎶</h1>
         <Button className='button-desktop' variant="contained" endIcon={<HelpIcon />} onClick={() => {
@@ -88,11 +90,11 @@ function App() {
             }}>
           ヘルプ
         </Button>
-        <HelpCenterIcon className='button-mobile' onClick={() => {setOpen(true);}}/>
+        <HelpCenterIcon className='button_mobile' onClick={() => {setOpen(true);}}/>
       </div>
       <Collapse in={open}>
         <Alert
-        className='alert-container'
+        className='alert_container'
         severity="info"
         icon={<HelpIcon fontSize="inherit" />}
         action={
@@ -109,13 +111,13 @@ function App() {
         }
         sx={{ mb: 2 }}
         >
-          <span>この歌詞検索エンジンは生成AIを活用することによって、キーワード検索を超えた、「嬉しくて懐かしい」や「悲しい失恋」、「海に関連する」といった自然言語によるセマンティック検索を行うことができます。このアプリは文脈に基づいたセマンティック検索のアルゴリズムを使って、関連する結果に優先順位をつけ、おすすめの曲を教えてくれます。</span>
+          <span>この歌詞検索エンジンは生成AIを活用することによって、キーワード検索を超えた「嬉しくて懐かしい」や「悲しい失恋」、「海に関連する」といった自然言語による検索を行うことができます。このアプリは文脈に基づいたセマンティック検索のアルゴリズムを使って、関連する結果に優先順位をつけ、おすすめの曲を教えてくれます。</span>
         </Alert>
       </Collapse>
 
-      <div className='search-form-wrapper'>
+      <div className='search_form_wrapper'>
         <Paper
-          className='search-form'
+          className='search_form'
           component="form"
           sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
           onSubmit={(e) => {
@@ -127,7 +129,7 @@ function App() {
           <InputBase
             sx={{ ml: 1, flex: 1 }}
             placeholder='文章を入力して検索する'
-            inputProps={{ 'aria-label': 'search movies' }}
+            inputProps={{ 'aria-label': 'search songs' }}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
@@ -138,14 +140,14 @@ function App() {
       </div>
 
       {((isFilterLoading || (songData != null && songData.length > 0)) && initRequest !== false) && (
-      <Accordion className='accordion-container'>
+      <Accordion className='accordion_container'>
         <AccordionSummary
           expandIcon={<ArrowDropDownIcon />}
           aria-controls="panel2-content"
           id="panel2-header"
         >
         {isFilterLoading ? (
-          <span className='accordion-label'>
+          <span className='accordion_label'>
             <Oval
               visible={true}
               height="20"
@@ -157,19 +159,19 @@ function App() {
               wrapperClass=""
               strokeWidth={5}
             />
-            あなたの入力分に基づいたフィルタを作成しています...
+            あなたの入力分に基づいたオススメ楽曲を作成しています...
           </span>
         ) : (
-          <span className='accordion-label'>
+          <span className='accordion_label'>
             <CheckCircleIcon/> 
-            フィルタの作成が完了しました！（クリックして表示）
+            オススメ楽曲の作成が完了しました！（クリックして表示）
           </span>
         )}
         </AccordionSummary>
         <AccordionDetails>
           {(!isFilterLoading && filterData) ? (
           <Alert
-          className='alert-container filter-list'
+          className='alert_container filter_list'
           severity="info"
           sx={{ mb: 2 }}
           >
@@ -204,27 +206,40 @@ function App() {
       </FadeIn>
       )}
 
-      <Grid container spacing={2} className='result-container'>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Grid container spacing={2}>
-            {songData && songData.map((song: any, index: number) => (
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6} key={index}>
-                <FadeIn transitionDuration={700} key={index}>
-                  <div key={index} className='movie-poster zoom'>
-                    <img
-                      src={song.img_src}
-                      alt={song.song}
-                      onError={({ currentTarget }) => {
-                        currentTarget.onerror = null; // prevents looping
-                      }}
-                    />
-                  </div>
-                </FadeIn>
-              </Grid>
-            ))}
+      {!isFilterLoading && (
+      <FadeIn transitionDuration={700}>
+        <Grid container spacing={2} className='result_container'>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+            <Grid container spacing={2}>
+              {songData && songData.map((song: any, index: number) => (
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4} key={index}>
+                  <FadeIn transitionDuration={700} key={index}>
+                    <div key={index} className='song_img zoom'>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
+                          <img
+                            className='square_img'
+                            src={song.img_src}
+                            alt={song.song}
+                            onError={({ currentTarget }) => {
+                              currentTarget.onerror = null; // prevents looping
+                            }}
+                          />
+                        </Grid>
+                        <Grid item className='card_info' xs={12} sm={12} md={7} lg={7} xl={7}>
+                          <h2>{truncateString(song.song, 15)}</h2>
+                          <p>{truncateString(song.artist, 15)}</p>
+                        </Grid>
+                      </Grid>
+                    </div>
+                  </FadeIn>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </FadeIn>
+      )}
 
     </FadeIn>
   );
