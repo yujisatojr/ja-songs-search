@@ -4,3 +4,4 @@ langchain-community==0.0.31
 openai==0.28
 sentence-transformers==2.2.2
 qdrant_client==1.8.2
+gunicorn==22.0.0
