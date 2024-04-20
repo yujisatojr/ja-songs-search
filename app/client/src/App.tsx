@@ -3,6 +3,7 @@ import axios from 'axios';
 import FadeIn from 'react-fade-in';
 import { Oval, ThreeDots } from 'react-loader-spinner'
 import { TypeAnimation } from 'react-type-animation';
+import { styled } from '@mui/material/styles';
 import './App.scss';
 
 // Import MUI components
@@ -22,19 +23,32 @@ import Paper from '@mui/material/Paper';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
-import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import SearchIcon from '@mui/icons-material/Search';
 
 function App() {
   const [searchInput, setSearchInput] = useState<string>('');
   const [filterData, setFilterData] = useState<any>(null);
   const [songData, setSongData] = useState<any>(null);
+  const [songDetail, setSongDetail] = useState<any>(null);
+  // const [segment, setSegments] = useState<any>([]);
 
   const [isFilterLoading, setIsFilterLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [clicked, setClicked] = useState<boolean>(false);
   const [initRequest, setInitRequest] = useState<boolean>(false);
 
+  const Item = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(1),
+    textAlign: 'left',
+  }));
+
   const truncateString = (str: string, maxLength: number) => str.length > maxLength ? str.slice(0, maxLength) : str;
+
+  const parseString = (str: string) => {
+    const segmentsArray = str.split('　');
+    // setSegments(segmentsArray);
+    return segmentsArray
+  };
 
   const handleSearchSubmit = async () => {
     setIsFilterLoading(true);
@@ -53,6 +67,11 @@ function App() {
       setIsFilterLoading(false);
     }
   };
+
+  const handleClick = (song: any) => {
+    setSongDetail(song);
+    setClicked(true);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +93,13 @@ function App() {
   }, [filterData]);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Smooth scrolling animation
+    });
+  }, [clicked]);
+
+  useEffect(() => {
     handleSearchSubmit();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,13 +110,12 @@ function App() {
   return (
     <FadeIn transitionDuration={700} className='song_app_root'>
       <div className='header'>
-        <h1>AI 歌詞検索 🎶</h1>
+        <h1>AI 歌詞検索 🎧</h1>
         <Button className='button-desktop' variant="contained" endIcon={<HelpIcon />} onClick={() => {
               setOpen(true);
             }}>
-          ヘルプ
+          使い方
         </Button>
-        <HelpCenterIcon className='button_mobile' onClick={() => {setOpen(true);}}/>
       </div>
       <Collapse in={open}>
         <Alert
@@ -111,7 +136,12 @@ function App() {
         }
         sx={{ mb: 2 }}
         >
-          <span>この歌詞検索エンジンは生成AIを活用することによって、キーワード検索を超えた「嬉しくて懐かしい」や「悲しい失恋」、「海に関連する」といった自然言語による検索を行うことができます。このアプリは文脈に基づいたセマンティック検索のアルゴリズムを使って、関連する検索結果に優先順位をつけ、おすすめの曲を教えてくれます。</span>
+          <span className='instruction'>この歌詞検索アプリは生成AIを活用することによって、キーワード検索を超えた自然言語による幅広い検索を行うことができます。また、入力文に応じておすすめのアーティストや曲名を教えてくれます。次のような3パターンの検索を試してみてください。</span>
+          <ol>
+            <li>文脈や概念を元にしたセマンティック検索：例えば「海」という単語を使うと、夏や船、青に関連した曲がヒットします。</li>
+            <li>感情を元にしたセンチメント分析：例えば「楽しい音楽」と「悲しい音楽」では、歌詞のムードに応じた曲が選別されます。</li>
+            <li>単語やフレーズを元にしたフィルター検索：曲名やアーティストの名前、歌詞の内容など柔軟な検索に対応しています。</li>
+          </ol>
         </Alert>
       </Collapse>
 
@@ -139,7 +169,7 @@ function App() {
         </Paper>
       </div>
 
-      {((isFilterLoading || (songData != null && songData.length > 0)) && initRequest !== false) && (
+      {((isFilterLoading || (songData != null && songData.length > 0)) && initRequest !== false && (filterData['insights'] !== '')) && (
       <Accordion className='accordion_container'>
         <AccordionSummary
           expandIcon={<ArrowDropDownIcon />}
@@ -179,7 +209,7 @@ function App() {
               sequence={[
                 `${filterData['sentiment'] === 'positive' ? '検索結果には、あなたの入力文に従ってポジティブな感情に合わせた曲のみを選びました。\n' : ''}
                 ${filterData['sentiment'] === 'negative' ? '検索結果には、あなたの入力文に従ってネガティブな感情に合わせた曲のみを選びました。\n': ''}
-                ${filterData['insights'] !== '' && filterData['insights']}`,
+                ${filterData['insights'] !== '' ? filterData['insights'] : ''}`,
               ]}
               speed={{ type: 'keyStrokeDelayInMs', value: 30 }}
               style={{ fontSize: '1em', display: 'block'}}
@@ -208,7 +238,7 @@ function App() {
       </FadeIn>
       )}
 
-      {!isFilterLoading && (
+      {!isFilterLoading && !clicked && (
       <FadeIn transitionDuration={700}>
         <Grid container spacing={2} className='result_container'>
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -216,7 +246,7 @@ function App() {
               {songData && songData.map((song: any, index: number) => (
                 <Grid item xs={12} sm={12} md={4} lg={4} xl={4} key={index}>
                   <FadeIn transitionDuration={700} key={index}>
-                    <div key={index} className='song_img zoom'>
+                    <Item key={index} className='song_img zoom' onClick={() => handleClick(song)}>
                       <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
                           <img
@@ -229,11 +259,11 @@ function App() {
                           />
                         </Grid>
                         <Grid item className='card_info' xs={12} sm={12} md={7} lg={7} xl={7}>
-                          <h2>{truncateString(song.song, 15)}</h2>
-                          <p>{truncateString(song.artist, 15)}</p>
+                          <h2>{truncateString(song.song, 14)}</h2>
+                          <p>{truncateString(song.artist, 14)}</p>
                         </Grid>
                       </Grid>
-                    </div>
+                    </Item>
                   </FadeIn>
                 </Grid>
               ))}
@@ -243,6 +273,35 @@ function App() {
       </FadeIn>
       )}
 
+      {!isFilterLoading && clicked && (
+      <FadeIn transitionDuration={700}>
+        <Grid container spacing={2} className='result_container'>
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+            <Item className='song_detail_card'>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                  <img
+                    className='square_img'
+                    src={songDetail.img_src}
+                    alt={songDetail.song}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                    }}
+                  />
+                </Grid>
+                <Grid className='right_area' item xs={12} sm={12} md={8} lg={8} xl={8}>
+                  <div className='right_header'><h1>{songDetail.song}</h1><CloseIcon fontSize="inherit" onClick={() => setClicked(false)}/></div>
+                  <h3>{songDetail.artist}</h3>
+                  {parseString(songDetail.lyrics).map((segment, index) => (
+                    <p key={index}>{segment}</p>
+                  ))}
+                </Grid>
+              </Grid>
+            </Item>
+          </Grid>
+        </Grid>
+      </FadeIn>
+      )}
     </FadeIn>
   );
 }

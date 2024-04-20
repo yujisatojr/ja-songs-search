@@ -49,12 +49,12 @@ def parse_user_query(user_query):
         Your task is to parse the following query '{user_query}' provided by a user and generate JSON output according to the template provided later.
         The explanation of each value in the JSON template is as follows:
         "query": For this field, put the user query as is.
-        "sentiment": This field represents the sentiment of the song. If the user mentions words such as '悲しい', 'かなしい' are mentioned in the user query, fill out this field with 'negative'. If words such as '楽しい', '嬉しい', 'ハッピー' are mentioned, fill out this field with 'positive'. If these words are not mentioned or specified in the user query, please leave the field empty.
-        "insights": For this field, provide one sentence of brief insights regarding the user's keywords and one sentence of recommendations to the user (use 'あなた' to refer to the user) on which Japanese song(s) and/or Japanese artist(s) the user might like based on the user's keywords. The entire sentence needs to have a friendly tone and be entirely in the Japanese language.
+        "sentiment": This field represents the sentiment of the song. If the user explicitly mentions words such as '悲しい', 'かなしい' in the user query, fill out this field with 'negative'. If words such as '楽しい', '嬉しい', 'ハッピー' are explicitly mentioned, fill out this field with 'positive'. If these words are not mentioned in the user query, please leave the field empty.
+        "insights": For this field, provide one sentence of brief insights regarding the user's keywords and one sentence of recommendations to the user (use 'あなた' to refer to the user) on which Japanese song(s) and/or Japanese artist(s) the user might like based on the user's keywords. The entire sentence needs to have a friendly tone and be entirely in the Japanese language. If the user query is empty, please also leave this field empty.
         Below is the JSON template:
         {{
             "query": "{user_query}",
-            "sentiment": "positive",
+            "sentiment": "",
             "insights": "あなたのキーワード「海と夏」から察するに、あなたはリラックスしたり夏の気分を楽しむ音楽をお探しのようですね。その場合、スピッツの「ロビンソン」という曲がおすすめですよ！"
         }}
     """
@@ -87,13 +87,19 @@ def create_filter(parsed_query):
 
     data = json.loads(parsed_query)
 
-    # Extract original user query
-    user_query = data['query']
     sentiment = data['sentiment']
-    insights = data['insights']
+    user_query = data['query']
+    # insights = data['insights']
     
     # Build filter conditions
     filter_conditions = []
+
+    # Create a default filter
+    if user_query is None or user_query == '':
+        filter_conditions.append(models.FieldCondition(
+            key="artist",
+            match=models.MatchValue(value="米津玄師")
+        ))
     
     if sentiment is not None and sentiment != '':
         if sentiment == 'positive':
