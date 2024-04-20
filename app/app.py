@@ -2,11 +2,11 @@ from flask import Flask, jsonify, request, send_from_directory
 from search_songs import parse_user_query, search_songs_in_qdrant
 import logging
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./client/build', static_url_path='')
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/get_filters')
 def get_filters():
