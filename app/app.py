@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
 from search_songs import parse_user_query, search_songs_in_qdrant
 import logging
 
 app = Flask(__name__, static_folder='./client/build', static_url_path='')
+
+CORS(app)
 
 @app.route("/")
 def index():
@@ -43,4 +46,4 @@ def get_movie_list():
         return jsonify({'error': str(e)}), 400
     
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
