@@ -1,11 +1,11 @@
 # AI 歌詞検索アプリ
 生成AIを利用することで、自然言語で歌詞を検索することができるウェブアプリです。
 
-![screenshot](./assets/app_screenshot.png)
+![screenshot](./client/src/assets/images/app_screenshot.png)
 
 ## 1. 特徴
 
-![diagram](./assets/app_diagram.jpg)
+![diagram](./client/src/assets/images/app_diagram.jpg)
 
 - **文章のベクトル化・センチメント分析**:
     - Pandasを使ったデータフレーム（元CSVフォーマット）のデータクリーニング
@@ -29,7 +29,7 @@
     - `./app`フォルダに`.env`ファイルを作成し、次の環境変数を追加します：
 
         ```
-        OPENAI_API_KEY=your_openai_api_key
+        GROQ_API_KEY=your_groq_api_key # Or you can use OpenAI OPENAI_API_KEY=your_openai_api_key
         QDRANT_API_KEY=your_qdrant_api_key
         QDRANT_URL=your_qdrant_url
         ```
@@ -37,12 +37,6 @@
     - これにより、バックエンド実行時にOpenAIとQdrantがこれらの環境変数にアクセスできるようになります。`.env`ファイルを共有したり、APIキーを公開しないように注意してください。
 
 1. Flaskバックエンドのセットアップ:
-
-    - Webアプリ関連のファイルは`./app`フォルダに格納されています。
-
-        ```
-        cd app
-        ```
 
     - Pythonを使って仮想環境を作成し、アクティベートします：
 
@@ -58,12 +52,12 @@
         ```
 
 2. Reactフロントエンドのセットアップ:
-    - Reactアプリケーションの関連コードは`./app/client`フォルダに格納されています。
+    - Reactアプリケーションの関連コードは`./client`フォルダに格納されています。
 
-    - `./app/client`フォルダに移動し、npmパッケージをインストールします：
+    - `./client`フォルダに移動し、npmパッケージをインストールします：
 
         ```
-        cd app/client
+        cd client
         npm install
         ```
 
