@@ -6,10 +6,15 @@ import os
 from qdrant_client import models, QdrantClient
 from qdrant_client.http import models as rest
 from qdrant_client.http.models import Record
+from groq import Groq
 
 load_dotenv(find_dotenv())
-client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
+# client = OpenAI(
+#     api_key=os.getenv('OPENAI_API_KEY'),
+# )
+
+client = Groq(
+    api_key=os.getenv('GROQ_API_KEY'),
 )
 
 # Connect to the Qdrant cloud
@@ -70,7 +75,7 @@ def parse_user_query(user_query):
     ]
 
     stream = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
+        model="mixtral-8x7b-32768",
         messages=messages,
         max_tokens=500,
         temperature=0.5,

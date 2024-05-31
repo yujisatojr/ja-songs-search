@@ -7,3 +7,4 @@ openai==1.10.0
 sentence-transformers==2.2.2
 qdrant_client==1.8.2
 gunicorn==22.0.0
+groq==0.5.0
