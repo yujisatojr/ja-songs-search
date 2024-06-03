@@ -9,9 +9,6 @@ from qdrant_client.http.models import Record
 from groq import Groq
 
 load_dotenv(find_dotenv())
-# client = OpenAI(
-#     api_key=os.getenv('OPENAI_API_KEY'),
-# )
 
 client = Groq(
     api_key=os.getenv('GROQ_API_KEY'),
@@ -87,14 +84,10 @@ def parse_user_query(user_query):
 
 def create_filter(parsed_query):
 
-    # print('FILTER GENERATED')
-    # print(parsed_query)
-
     data = json.loads(parsed_query)
 
     sentiment = data['sentiment']
     user_query = data['query']
-    # insights = data['insights']
     
     # Build filter conditions
     filter_conditions = []
@@ -154,12 +147,9 @@ def search_filtered_vector(parsed_query, collection_name, vector_name, top_k=15)
 
 def search_songs_in_qdrant(parsed_query):
 
-    # json_query = json.loads(parsed_query)
     json_query = json.dumps(parsed_query)
 
     query_results = search_filtered_vector(json_query, collection_name, vector_name)
-
-    # print(query_results)
 
     results = []
     
