@@ -5,8 +5,6 @@
 
 ## 1. 特徴
 
-![diagram](./client/src/assets/images/app_diagram.jpg)
-
 - **文章のベクトル化・センチメント分析**:
     - Pandasを使ったデータフレーム（元CSVフォーマット）のデータクリーニング
     - Hugging Face Transformersテキスト分類モデルを用いて、歌詞をベースにセンチメントスコアの割り当て
