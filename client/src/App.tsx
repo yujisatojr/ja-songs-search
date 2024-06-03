@@ -30,7 +30,6 @@ function App() {
   const [filterData, setFilterData] = useState<any>(null);
   const [songData, setSongData] = useState<any>(null);
   const [songDetail, setSongDetail] = useState<any>(null);
-  // const [segment, setSegments] = useState<any>([]);
 
   const [isFilterLoading, setIsFilterLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -46,7 +45,6 @@ function App() {
 
   const parseString = (str: string) => {
     const segmentsArray = str.split('　');
-    // setSegments(segmentsArray);
     return segmentsArray
   };
 
@@ -104,9 +102,6 @@ function App() {
     handleSearchSubmit();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(filterData);
-  // console.log(songData);
 
   return (
   <>
